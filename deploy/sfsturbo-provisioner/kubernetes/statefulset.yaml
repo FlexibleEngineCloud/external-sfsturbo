@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sfsturbo-provisioner
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sfsturbo-provisioner-runner
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "get", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sfsturbo-provisioner-role
+subjects:
+  - kind: ServiceAccount
+    name: sfsturbo-provisioner
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: sfsturbo-provisioner-runner
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: sfsturbo-provisioner
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: sfsturbo-provisioner
+  serviceName: sfsturbo-provisioner
+  template:
+    metadata:
+      labels:
+        app: sfsturbo-provisioner
+    spec:
+      serviceAccount: sfsturbo-provisioner
+      containers:
+        - name: sfsturbo-provisioner
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          image: swr.cn-east-3.myhuaweicloud.com/efs-csi/sfsturbo-provisioner:v1
+          imagePullPolicy: Always
+          args:
+          # - "--vpcid=YOUR_VPCID mandatory if you have multiple VPCID"
+            - "--v=5"
+            - "--cloudconfig=$(CLOUD_CONFIG)"
+          env:
+            - name: CLOUD_CONFIG
+              value: /etc/config/cloud.conf
+          volumeMounts:
+            - name: cloud-config-dir
+              mountPath: /etc/config
+            - name: cloud-data-dir
+              mountPath: /var/lib/cloud/data
+      volumes:
+        - name: cloud-config-dir
+          hostPath:
+            path: /etc/config
+            type: DirectoryOrCreate
+        - name: cloud-data-dir
+          hostPath:
+            path: /var/lib/cloud/data
+            type: DirectoryOrCreate
