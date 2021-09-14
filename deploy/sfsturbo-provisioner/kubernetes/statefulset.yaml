@@ -68,7 +68,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: swr.cn-east-3.myhuaweicloud.com/efs-csi/sfsturbo-provisioner:v1
+          image: registry.eu-west-0.prod-cloud-ocb.orange-business.com/dafurepo/sfsturbo-provisioner:v1
           imagePullPolicy: Always
           args:
           # - "--vpcid=YOUR_VPCID mandatory if you have multiple VPCID"
