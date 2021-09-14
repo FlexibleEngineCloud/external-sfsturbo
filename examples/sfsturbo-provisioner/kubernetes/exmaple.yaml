@@ -1,0 +1,46 @@
+apiVersion: storage.k8s.io/v1beta1
+kind: StorageClass
+metadata:
+  name: sfsturbo-storage-class
+provisioner: external.k8s.io/sfsturbo
+parameters:
+  protocol: NFS
+  availability: cn-east-3a
+  type: STANDARD
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sfsturbo-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500G
+  storageClassName: sfsturbo-storage-class
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx 
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    volumeMounts:
+      - mountPath: /var/lib/www/html
+        name: sfsturbo-data
+  volumes:
+  - name: sfsturbo-data
+    persistentVolumeClaim:
+      claimName: sfsturbo-pvc
+      readOnly: false
