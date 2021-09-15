@@ -5,7 +5,7 @@ metadata:
 provisioner: external.k8s.io/sfsturbo
 parameters:
   protocol: NFS
-  availability: cn-east-3a
+  availability: eu-west-0a
   type: STANDARD
 
 ---
