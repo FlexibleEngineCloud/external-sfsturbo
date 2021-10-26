@@ -5,7 +5,7 @@ on Flexible Engine Cloud.
 Compatible with the Network File System protocol, EFS is expandable to petabytes, features high performance,
 and seamlessly handles data-intensive and bandwidth-intensive applications.
 
-This repository hosts external sfsturbo provisioner for Kubernetes.
+This repository hosts a demonstration for how to use external sfsturbo provisioner image for Kubernetes.
 
 ## Getting Started on Kubernetes
 
