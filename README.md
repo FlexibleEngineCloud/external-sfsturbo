@@ -54,9 +54,16 @@ Different than SFS, SFS turbo is not provisionned immediately but needs around 5
 
 ### Usage
 
+Here is one example to show how to use this provisioner
+
 ```
 kubectl create -f ./examples/sfsturbo-provisioner/kubernetes/example.yaml
 ```
+
+As shown in the example we don't need to precise VPC, Security Group, Subnet since they are inherited from the metadata of ECS VMs
+
+KMS encryption not supported.
+Expansion not supported.
 
 ## License
 
