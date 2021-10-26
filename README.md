@@ -5,7 +5,7 @@ on Flexible Engine Cloud.
 Compatible with the Network File System protocol, EFS is expandable to petabytes, features high performance,
 and seamlessly handles data-intensive and bandwidth-intensive applications.
 
-This repository houses external sfsturbo provisioner for Kubernetes.
+This repository hosts external sfsturbo provisioner for Kubernetes.
 
 ## Getting Started on Kubernetes
 
@@ -49,6 +49,8 @@ type -> Select STANDARD or PERFORMANCE
 ```
 kubectl create -f ./deploy/sfsturbo-provisioner/kubernetes/statefulset.yaml
 ```
+
+Different than SFS, SFS turbo is not provisionned immediately but needs around 5 miuntes for getting the instance ready.
 
 ### Usage
 
